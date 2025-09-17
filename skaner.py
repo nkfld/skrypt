@@ -273,7 +273,7 @@ class OdooBarcode:
                         'mrp.production', 'action_cancel',
                         [last_op['id']]
                     )
-                    print(f"🔄 Cofnięto produkcję: {last_op['quantity']} szt. {last_op['product_name']}")
+                    print(f" Cofnięto produkcję: {last_op['quantity']} szt. {last_op['product_name']}")
                 except:
                     # Jeśli nie można anulować, ustaw stan na cancel
                     self.models.execute_kw(
@@ -281,7 +281,7 @@ class OdooBarcode:
                         'mrp.production', 'write',
                         [last_op['id'], {'state': 'cancel'}]
                     )
-                    print(f"🔄 Anulowano produkcję: {last_op['quantity']} szt. {last_op['product_name']}")
+                    print(f" Anulowano produkcję: {last_op['quantity']} szt. {last_op['product_name']}")
                 
             elif last_op['type'] in ['stock_move_in', 'stock_move_out']:
                 # Cofnij operację magazynową
@@ -293,7 +293,7 @@ class OdooBarcode:
                         [last_op['id']]
                     )
                     operation_name = "przyjęcie" if last_op['type'] == 'stock_move_in' else "wydanie"
-                    print(f"🔄 Cofnięto {operation_name}: {last_op['quantity']} szt. {last_op['product_name']}")
+                    print(f" Cofnięto {operation_name}: {last_op['quantity']} szt. {last_op['product_name']}")
                 except:
                     # Jeśli nie można anulować, ustaw stan na cancel
                     self.models.execute_kw(
@@ -302,7 +302,7 @@ class OdooBarcode:
                         [last_op['id'], {'state': 'cancel'}]
                     )
                     operation_name = "przyjęcie" if last_op['type'] == 'stock_move_in' else "wydanie"
-                    print(f"🔄 Anulowano {operation_name}: {last_op['quantity']} szt. {last_op['product_name']}")
+                    print(f" Anulowano {operation_name}: {last_op['quantity']} szt. {last_op['product_name']}")
             
             return True
             
@@ -394,12 +394,12 @@ class OdooBarcode:
                     'mrp.production', 'button_mark_done',
                     [production_id]
                 )
-                print(f"🏭 Zlecenie produkcyjne {production_id} ukończone!")
+                print(f"Zlecenie produkcyjne {production_id} ukończone!")
             except Exception as e:
-                print(f"🏭 Zlecenie produkcyjne {production_id} utworzone (wymaga ręcznego ukończenia)")
+                print(f"Zlecenie produkcyjne {production_id} utworzone (wymaga ręcznego ukończenia)")
                 print(f"   Szczegóły: {e}")
             
-            print(f"📋 Wyprodukowano {quantity} szt. {product_name}")
+            print(f"Wyprodukowano {quantity} szt. {product_name}")
             
             # Dodaj do historii
             self.add_to_history('production', production_id, product_name, quantity)
@@ -597,21 +597,21 @@ class OdooBarcode:
         # Sprawdź czy to kod przełączania trybu
         if barcode == self.ADD_MODE_BARCODE:
             self.mode = 'add'
-            print("🔄 Tryb: DODAWANIE towarów")
+            print(" Tryb: DODAWANIE towarów")
             self.play_sound('add_mode')  # Odtwórz dźwięk trybu dodawania
             return
         elif barcode == self.REMOVE_MODE_BARCODE:
             self.mode = 'remove'
-            print("🔄 Tryb: ZDEJMOWANIE towarów")
+            print(" Tryb: ZDEJMOWANIE towarów")
             self.play_sound('remove_mode')  # Odtwórz dźwięk trybu zdejmowania
             return
         elif barcode == self.MULTI_MODE_BARCODE:
             self.multi_mode = not self.multi_mode  # Przełącz tryb wielokrotności
             if self.multi_mode:
-                print("🔢 Tryb WIELE: Będę pytać o ilość")
+                print("Tryb WIELE: Będę pytać o ilość")
                 self.play_sound('multi_mode')  # Dźwięk trybu wiele
             else:
-                print("1️⃣ Tryb POJEDYNCZY: Domyślnie 1 sztuka")
+                print("Tryb POJEDYNCZY: Domyślnie 1 sztuka")
                 self.play_sound('single_mode')  # Dźwięk trybu pojedynczego
             return
         elif barcode == self.UNDO_BARCODE:
@@ -619,18 +619,18 @@ class OdooBarcode:
             success = self.undo_last_operation()
             if success:
                 remaining = len(self.operation_history)
-                print(f"⏮ Pozostało {remaining} operacji do cofnięcia")
+                print(f" Pozostało {remaining} operacji do cofnięcia")
             return
         
         # Sprawdź czy tryb został ustawiony
         if not self.mode:
-            print("⚠ Najpierw zeskanuj kod wyboru trybu!")
+            print("Najpierw zeskanuj kod wyboru trybu!")
             return
         
         # Wyszukaj produkt
         product = self.find_product_by_barcode(barcode)
         if not product:
-            print(f"✗ Nie znaleziono produktu o kodzie: {barcode}")
+            print(f"Nie znaleziono produktu o kodzie: {barcode}")
             return
         
         # Pobierz ilość do przetworzenia
@@ -639,15 +639,15 @@ class OdooBarcode:
             try:
                 quantity = float(input(f"Podaj ilość dla {product['name']}: "))
                 if quantity <= 0:
-                    print("✗ Ilość musi być większa od 0")
+                    print("Ilość musi być większa od 0")
                     return
             except ValueError:
-                print("✗ Nieprawidłowa ilość")
+                print("Nieprawidłowa ilość")
                 return
         else:
             # Tryb pojedynczy - domyślnie 1 sztuka
             quantity = 1.0
-            print(f"📦 {product['name']} - ilość: {quantity} szt. (dostępne: {product['qty_available']} szt.)")
+            print(f"{product['name']} - ilość: {quantity} szt. (dostępne: {product['qty_available']} szt.)")
         
         # Wykonaj operację magazynową
         if self.mode == 'add':
@@ -656,7 +656,7 @@ class OdooBarcode:
                 bom_id = self.PRODUCTION_PRODUCTS[barcode]
                 success = self.create_production_order(product['id'], bom_id, quantity)
                 if success:
-                    print(f"✓ Rozpoczęto produkcję {quantity} szt. {product['name']}")
+                    print(f"Rozpoczęto produkcję {quantity} szt. {product['name']}")
                     # Odtwórz odpowiedni dźwięk dodawania
                     if quantity == 1:
                         self.play_sound('added_one')
@@ -668,25 +668,25 @@ class OdooBarcode:
                 # Zwykłe przyjęcie towaru
                 success = self.create_stock_move(product['id'], quantity, 'in')
                 if success:
-                    print(f"✓ Dodano {quantity} szt. {product['name']}")
+                    print(f"Dodano {quantity} szt. {product['name']}")
                     # Odtwórz odpowiedni dźwięk dodawania
                     if quantity == 1:
                         self.play_sound('added_one')
                     else:
                         self.play_sound('added_many')
                 else:
-                    print(f"✗ Błąd dodawania towaru")
+                    print(f"Błąd dodawania towaru")
         elif self.mode == 'remove':
             # Sprawdź dostępność towaru
             if product['qty_available'] < quantity:
-                print(f"⚠ Niewystarczająca ilość w magazynie. Dostępne: {product['qty_available']}")
+                print(f"Niewystarczająca ilość w magazynie. Dostępne: {product['qty_available']}")
                 confirm = input("Czy kontynuować? (t/n): ")
                 if confirm.lower() not in ['t', 'tak', 'y', 'yes']:
                     return
             
             success = self.create_stock_move(product['id'], quantity, 'out')
             if success:
-                print(f"✓ Zdjęto {quantity} szt. {product['name']}")
+                print(f"Zdjęto {quantity} szt. {product['name']}")
                 # Odtwórz odpowiedni dźwięk zdejmowania
                 if quantity == 1:
                     self.play_sound('removed_one')
@@ -704,12 +704,12 @@ class OdooBarcode:
         print(f"Kod zdejmowania: {self.REMOVE_MODE_BARCODE}")
         print(f"Kod wielokrotności: {self.MULTI_MODE_BARCODE}")
         print(f"Kod cofania: {self.UNDO_BARCODE}")
-        print("\n🎯 Tryby:")
+        print("Tryby:")
         print("• Domyślnie: 1 sztuka na skan")
         print("• 'wiele' → pytaj o ilość")
         print("• 'wiele' ponownie → powrót do 1 sztuki")
         print("• 'cofnij' → cofa ostatnią operację")
-        print("\n🏭 Produkty produkcyjne:")
+        print(" Produkty produkcyjne:")
         print("• 202500000076 → uruchamia proces produkcyjny")
         print("\nAby zakończyć, wpisz 'exit' lub 'quit'")
         print("="*50)
@@ -719,7 +719,7 @@ class OdooBarcode:
                 barcode = input("\nZeskanuj kod kreskowy: ").strip()
                 
                 if barcode.lower() in ['exit', 'quit', 'wyjście']:
-                    print("👋 Zamykanie programu...")
+                    print(" Zamykanie programu...")
                     break
                 
                 if not barcode:
@@ -728,14 +728,14 @@ class OdooBarcode:
                 self.process_barcode(barcode)
                 
             except KeyboardInterrupt:
-                print("\n👋 Program zakończony przez użytkownika")
+                print(" Program zakończony przez użytkownika")
                 break
             except Exception as e:
-                print(f"✗ Nieoczekiwany błąd: {e}")
+                print(f"Nieoczekiwany błąd: {e}")
 
 def main():
     """Funkcja główna"""
-    print("=== ODOO BARCODE SCANNER - macOS ===")
+    print("===  SCANNER ===")
     
     # Sprawdź czy chcesz użyć domyślnej konfiguracji
     use_config = input(f"Użyć domyślnej konfiguracji? (t/n) [URL: {CONFIG['url']}, DB: {CONFIG['database']}]: ").strip().lower()
@@ -747,7 +747,7 @@ def main():
         USERNAME = CONFIG['username']
         PASSWORD = CONFIG['password']
         
-        print(f"✓ Używam konfiguracji:")
+        print(f"connecting to:")
         print(f"  URL: {URL}")
         print(f"  Baza: {DB}")
         print(f"  User: {USERNAME}")
@@ -758,9 +758,9 @@ def main():
             full_path = os.path.expanduser(f"~/{path}")  # Rozwiń ścieżkę z ~
             if os.path.exists(full_path):
                 sound_paths[sound_type] = full_path
-                print(f"✓ Dźwięk {sound_type}: {full_path}")
+                print(f"Dźwięk {sound_type}: {full_path}")
             else:
-                print(f"⚠ Nie znaleziono: {full_path}")
+                print(f"Nie znaleziono: {full_path}")
     
     else:
         # Pytaj o dane ręcznie
@@ -771,7 +771,7 @@ def main():
         PASSWORD = input("Hasło: ").strip()
         
         if not all([URL, DB, USERNAME, PASSWORD]):
-            print("✗ Wszystkie pola są wymagane!")
+            print("Wszystkie pola są wymagane!")
             sys.exit(1)
         
         # Konfiguracja dźwięków
@@ -784,21 +784,21 @@ def main():
         sound_paths = {}
         if sound_add_mode and os.path.exists(sound_add_mode):
             sound_paths['add_mode'] = sound_add_mode
-            print(f"✓ Dźwięk trybu dodawania: {sound_add_mode}")
+            print(f"Dźwięk trybu dodawania: {sound_add_mode}")
         elif sound_add_mode:
-            print(f"⚠ Nie znaleziono pliku: {sound_add_mode}")
+            print(f"Nie znaleziono pliku: {sound_add_mode}")
         
         if sound_remove_mode and os.path.exists(sound_remove_mode):
             sound_paths['remove_mode'] = sound_remove_mode
-            print(f"✓ Dźwięk trybu zdejmowania: {sound_remove_mode}")
+            print(f"Dźwięk trybu zdejmowania: {sound_remove_mode}")
         elif sound_remove_mode:
-            print(f"⚠ Nie znaleziono pliku: {sound_remove_mode}")
+            print(f"Nie znaleziono pliku: {sound_remove_mode}")
         
         if sound_item_removed and os.path.exists(sound_item_removed):
             sound_paths['item_removed'] = sound_item_removed
-            print(f"✓ Dźwięk po zdjęciu towaru: {sound_item_removed}")
+            print(f"Dźwięk po zdjęciu towaru: {sound_item_removed}")
         elif sound_item_removed:
-            print(f"⚠ Nie znaleziono pliku: {sound_item_removed}")
+            print(f"Nie znaleziono pliku: {sound_item_removed}")
     
     # Uruchom skaner
     scanner = OdooBarcode(URL, DB, USERNAME, PASSWORD, sound_paths)
