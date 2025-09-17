@@ -154,7 +154,7 @@ class OdooBarcode:
     def connect(self):
         """Nawiązuje połączenie z Odoo"""
         try:
-            print("🔗 Łączenie z Odoo...")
+            print(" Łączenie z Odoo...")
             common = xmlrpc.client.ServerProxy(f'{self.url}/xmlrpc/2/common')
             self.uid = common.authenticate(self.db, self.username, self.password, {})
             
