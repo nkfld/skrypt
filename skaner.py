@@ -23,21 +23,21 @@ CONFIG = {
     'username': 'admin',
     'password': 'admin',
     'sounds': {
-        'add_mode': 'Downloads/skrypt/sounds/dodawanie.mp3',
-        'remove_mode': 'Downloads/skrypt/sounds/zdejmowanie.mp3',
-        'item_removed': 'Downloads/skrypt/sounds/zdjeto.mp3',
+        'add_mode': 'skrypt/sounds/dodawanie.mp3',
+        'remove_mode': 'skrypt/sounds/zdejmowanie.mp3',
+        'item_removed': 'skrypt/sounds/zdjeto.mp3',
         
         # Nowe dźwięki trybów ilości
-        'single_mode': 'Downloads/skrypt/sounds/trybpojed.mp3',
-        'multi_mode': 'Downloads/skrypt/sounds/trybwiele.mp3',
+        'single_mode': 'skrypt/sounds/trybpojed.mp3',
+        'multi_mode': 'skrypt/sounds/trybwiele.mp3',
         
         # Nowe dźwięki dodawania
-        'added_one': 'Downloads/skrypt/sounds/dodawanie.mp3',
-        'added_many': 'Downloads/skrypt/sounds/dodanowiele.mp3',
+        'added_one': 'skrypt/sounds/dodawanie.mp3',
+        'added_many': 'skrypt/sounds/dodanowiele.mp3',
         
         # Nowe dźwięki zdejmowania
-        'removed_one': 'Downloads/skrypt/sounds/zdjelam.mp3',
-        'removed_many': 'Downloads/skrypt/sounds/zdjwiele.mp3'
+        'removed_one': 'skrypt/sounds/zdjelam.mp3',
+        'removed_many': 'skrypt/sounds/zdjwiele.mp3'
     }
 }
 # =============================================================================
